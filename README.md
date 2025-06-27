@@ -11,7 +11,7 @@ It is nothing fancy, but it does the job. It simply loops every character of the
 ```bash
 #!/bin/bash
 
-. ./dist/be
+. ./be
 
 be_bold() {
   local input
@@ -37,10 +37,13 @@ TPL=$(cat <<EOF
   Well, well, hello {{NAME}}!
   {{#LIKES}}
     So {{NAME|REPLACE e ey|BOLD}}, I heard you like:
-    {{@FOREACH LIKES ,}}{{KEY1}}) {{VALUE|CAPITALIZE}}{{^LAST}}; and {{/LAST}}
+    {{@FOREACH LIKES ,}}
+      {{KEY1}}) {{VALUE|CAPITALIZE}}{{^LAST}}; and {{/LAST}}
     {{/FOREACH LIKES ,}}
+    {{@RAW}}Won't be processed: {{NAME}}{{/RAW}}
   {{/LIKES}}
 EOF
+)
 
 echo "$TPL" | be
 ```
@@ -54,14 +57,6 @@ Output:
     1) Hockey; and 
     2) Soccer
 ```
-
-## Development
-
-`make dev` will watch for changes in `src/` and produce a concatinated `be` file in `dist/` for use.
-
-## Building
-
-`make build` will produce a concatinated `be` file in `dist/` for use.
 
 ## Built-ins
 
@@ -107,6 +102,12 @@ The following special variables are usable inside a loop:
 `{{>templates/_partial}}`
 
 Will include and process the file `templates/_partial`.
+
+### Raw
+
+`{{@RAW}}Will be skipped {{NAME}}{{/RAW}}`
+
+Will skip over anything defined inside.
 
 ### Custom functions
 
