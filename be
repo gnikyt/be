@@ -368,7 +368,7 @@ be() {
         local expr_len=${#expr_name}
         expr_len=$((expr_len + 5)) # Skip the closing braces and the operator when seeking.
         while true; do
-          if [[ "$(seek $expr_len)" == "{{/$expr_name}}" ]]; then
+          if [[ "$(seek $expr_len)" == "{{$TOKEN_CLOSE_SLASH$expr_name}}" ]]; then
             # End of block. Skip to the end of the block.
             block_end=$((idx + expr_len))
             ((idx+=expr_len))

@@ -154,6 +154,23 @@ echo "{{@BOLD}}{{NAME}}{{/BOLD}}" | be
 # Output: "<strong>Joe</strong>"
 ```
 
+# TODO
+
+Handle string quoting. Example: `{{VAR|REPLACE "X M" "Y"}}` would be parsed as:
+
+* Variable: `VAR`
+* Pipe Method: `REPLACE`
+* Arg 1: `"X`
+* Arg 2: `M"`
+* Arg 3: `"Y"`
+
+Ideally:
+
+* Variable: `VAR`
+* Pipe Method: `REPLACE`
+* Arg 1: `X M`
+* Arg 2: `Y`
+
 ## LICENSE
 
 This project is released under the MIT [license](https://github.com/gnikyt/be/blob/master/LICENSE).
