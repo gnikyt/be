@@ -101,9 +101,7 @@ be_variable() {
 # be_include handles including a partial in a template.
 # It is ran through be.
 be_include() {
-  local contents=""
-  contents="$(cat "$1")"
-  echo "$contents" | be
+  be < "$1"
 }
 
 # be_if handles checking if a variable is truthy.
@@ -118,9 +116,7 @@ be_if() {
   value="${!1}"
   if [[ -n "$value" ]]; then
     # Passed, return parsed version of block.
-    local parsed
-    parsed=$(echo "$block" | be)
-    echo "$parsed"
+    echo "$block" | be
   else
     # Failed, return nothing.
     echo ""
@@ -139,9 +135,7 @@ be_unless() {
   value="${!1}"
   if [[ -z "$value" ]]; then
     # Passed, return parsed version of block.
-    local parsed
-    parsed=$(echo "$block" | be)
-    echo "$parsed"
+    echo "$block" | be
   else
     # Failed, return nothing.
     echo ""
