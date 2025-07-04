@@ -34,14 +34,15 @@ be_capitalize() {
 NAME="Joe"
 LIKES="hockey,soccer"
 TPL=$(cat <<EOF
-  Well, well, hello {{NAME}}!
+  Well, well, hello {{NAME|APPEND e|APPEND e}}!
   {{#LIKES}}
-    So {{NAME|REPLACE e ey|BOLD}}, I heard you like:
+    So {{NAME|REPLACE "e" "ey"|BOLD}}, I heard you like:
     {{@FOREACH LIKES ,}}
       {{KEY1}}) {{VALUE|CAPITALIZE}}{{^LAST}}; and {{/LAST}}
     {{/FOREACH LIKES ,}}
     {{@RAW}}Won't be processed: {{NAME}}{{/RAW}}
   {{/LIKES}}
+  {{GOODBYE}}
 EOF
 )
 
@@ -51,11 +52,15 @@ echo "$TPL" | be
 Output:
 
 ```
-  Well, well, hello Joe!
+  Well, well, hello Joeee!
   
     So <strong>Joey</strong>, I heard you like:
-    1) Hockey; and 
-    2) Soccer
+    
+      1) Hockey; and 
+    
+      2) Soccer
+    
+    Won't be processed: {{NAME}}
 ```
 
 ## Built-ins
@@ -69,6 +74,12 @@ Will replace with the value of `VAR`.
 Piping: `{{VAR|UPPERCASE|REPLACE X Y}}`
 
 Will replace `VAR` with the value of `VAR`, then run it through a custom function `UPPERCASE`, then run it througha custom function `REPLACE` where it has the arguments of `X` and `Y` (replace `X` with `Y`).
+
+Supports for quoting as well:
+
+* `{{VAR|UPPERCASE|REPLACE "X" "Y"}}`; or
+* `{{VAR|UPPERCASE|REPLACE "\"" "'"}}`
+
 
 ### If
 
@@ -153,23 +164,6 @@ NAME="Joe"
 echo "{{@BOLD}}{{NAME}}{{/BOLD}}" | be
 # Output: "<strong>Joe</strong>"
 ```
-
-# TODO
-
-Handle string quoting. Example: `{{VAR|REPLACE "X M" "Y"}}` would be parsed as:
-
-* Variable: `VAR`
-* Pipe Method: `REPLACE`
-* Arg 1: `"X`
-* Arg 2: `M"`
-* Arg 3: `"Y"`
-
-Ideally:
-
-* Variable: `VAR`
-* Pipe Method: `REPLACE`
-* Arg 1: `X M`
-* Arg 2: `Y`
 
 ## LICENSE
 

@@ -96,12 +96,13 @@ be_variable() {
 
   if [[ -z "$fn" ]]; then
     # No pipe method detected, just return the variable.
-    debug "VAR=$var;VALUE=${!var}"
     if [[ "$var" =~ $VALID_VAR && -n "$var" ]]; then
       # Valid variable, return its value.
+      debug "VAR=$var;VALUE=${!var}"
       echo "${!var}"
     else
       # Invalid variable, return as-is.
+      debug "VAR=$var;VALUE=${var}"
       echo "$var"
     fi
   else
@@ -112,7 +113,9 @@ be_variable() {
 
 # be_include handles including a partial in a template.
 # It is ran through be.
+# Example: {{>templates/_partial.html}}
 be_include() {
+  debug "INCLUDE=$1"
   be < "$1"
 }
 
@@ -188,6 +191,7 @@ be_function() {
     echo "$block"
   else
     # Function exists, run it with the block and args.
+    debug "FN=be_$fn;ARGS=${args[*]}"
     echo "$block" | be_"$fn" "${args[@]}"
   fi
 }
@@ -256,6 +260,14 @@ be_raw() {
   local block=""
   block=$(cat -)
   echo "$block"
+}
+
+# be_append will append the input to the end of the string.
+# Example: {{VAR|APPEND e|APPEND x}}
+be_append() {
+  local input
+  input=$(cat -)
+  echo "$input$1"
 }
 
 #
