@@ -10,6 +10,7 @@ readonly TOKEN_OP_INCLUDE=">"
 readonly TOKEN_OP_FUNCTION="@"
 readonly TOKEN_BLOCK_OPS="${TOKEN_OP_IF}${TOKEN_OP_FUNCTION}${TOKEN_OP_UNLESS}"
 readonly TOKEN_PIPE="|"
+readonly FN_ASSIGN="ASSIGN"
 
 # Varaible vailidity.
 readonly VALID_VAR='^[a-zA-Z_][a-zA-Z0-9_]*$'
@@ -270,6 +271,14 @@ be_append() {
   echo "$input$1"
 }
 
+# be_assign will assign the input to a global variable.
+# Example: {{@ASSIGN VAR}}value{{/ASSIGN VAR}}
+be_assign() {
+  local var="$1"
+  local value
+  value=$(cat -)
+  declare -g "$var=$value"
+}
 #
 # Main function.
 #
@@ -288,6 +297,8 @@ be_append() {
 # Functions:
 #   {{@FOREACH VAR DEL}}{{KEY}}:{{VALUE}}{{^LAST}}, {{/LAST}}{{/FOREACH VAR DEL}}
 #   {{@RAW}}I wont be processed {{AT}} {{ALL}}{{/RAW}}
+# Assignments:
+#   {{@ASSIGN VAR}}value{{/ASSIGN VAR}}
 # Custom functions:
 #   {{@FUNCTION_NAME arg1 arg2 arg3}}...{{/FUNCTION_NAME arg1 arg2 arg3}}
 # Etc...
@@ -407,8 +418,16 @@ be() {
           # Handle functions.
           "$TOKEN_OP_FUNCTION")
             debug "OP=$expr"
-            parsed=$(echo "$block" | be_function "${expr:1}")
-            result="${result/"$match"/"$parsed"}"
+            if [[ "${expr:1}" == "$FN_ASSIGN "* ]]; then
+              # Special handling for assign so global variables can be set.
+              be_assign "${expr:8}" <<< "$(echo "$block" | be)"
+              result="${result/"$match"/""}"
+            else
+              # Handle custom function.
+              # Remove the @ and run the function.
+              parsed=$(echo "$block" | be_function "${expr:1}")
+              result="${result/"$match"/"$parsed"}"
+            fi
             ;;
 
           # Unknown, skip.
@@ -425,7 +444,7 @@ be() {
             parsed=$(be_include "${expr:1}")
             result="${result/"$match"/"$parsed"}"
             ;;
-          
+
           # Handle variable.
           *)
             debug "VAR=$expr"

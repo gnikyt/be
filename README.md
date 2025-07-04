@@ -35,6 +35,7 @@ NAME="Joe"
 LIKES="hockey,soccer"
 TPL=$(cat <<EOF
   Well, well, hello {{NAME|APPEND e|APPEND e}}!
+  {{@ASSIGN GOODBYE}}Goodbye, {{NAME|CAPITALIZE}}!{{/ASSIGN GOODBYE}}
   {{#LIKES}}
     So {{NAME|REPLACE "e" "ey"|BOLD}}, I heard you like:
     {{@FOREACH LIKES ,}}
@@ -61,6 +62,8 @@ Output:
       2) Soccer
     
     Won't be processed: {{NAME}}
+  
+  Goodbye, Joe!
 ```
 
 ## Built-ins
@@ -119,6 +122,12 @@ Will include and process the file `templates/_partial`.
 `{{@RAW}}Will be skipped {{NAME}}{{/RAW}}`
 
 Will skip over anything defined inside.
+
+### Assignments
+
+`{{@ASSIGN HELLO}}Hello! {{NAME|CAPITALIZE}}{{/ASSIGN HELLO}}`
+
+Then, use `{{HELLO}}` to display.
 
 ### Custom functions
 
