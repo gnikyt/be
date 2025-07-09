@@ -211,12 +211,12 @@ be_foreach() {
 
   if [[ -z "$2" ]]; then
     # No delimiter passed in.
-    vals="${!1}"
+    vals="$1"
   else
     # Delimiter passed in.
     if [[ "$1" =~ $VALID_VAR && -n "$1" ]]; then
       # Valid variable, read it as an array.
-      readarray -d "$2" -t vals <<< "${!1}"
+      readarray -d "$2" -t vals <<< "$1"
     else
       # Invalid variable, just split the string.
       IFS="$2" read -ra vals <<< "$1"
