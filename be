@@ -211,7 +211,7 @@ be_foreach() {
 
   if [[ -z "$2" ]]; then
     # No delimiter passed in.
-    vals="$1"
+    read -ra vals <<< "$1"
   else
     # Delimiter passed in.
     if [[ "$1" =~ $VALID_VAR && -n "$1" ]]; then
