@@ -130,7 +130,7 @@ be_if() {
   local value="${!1}"
 
   block=$(cat -)
-  if [[ -n "$value" ]]; then
+  if [[ -n "$value" && "$value" != "false" ]]; then
     # Passed, return parsed version of block.
     echo "$block" | be
   else
@@ -149,7 +149,7 @@ be_unless() {
   local value="${!1}"
 
   block=$(cat -)
-  if [[ -z "$value" ]]; then
+  if [[ -z "$value" || "$value" == "false" ]]; then
     # Passed, return parsed version of block.
     echo "$block" | be
   else
