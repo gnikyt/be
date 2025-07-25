@@ -4,7 +4,7 @@ A BASH-powered extendable template engine.
 
 **Why?** Because I felt like it! Plus, I needed something for my blog which is also powered by BASH.
 
-It is nothing fancy, but it does the job. It simply loops every character of the template and tracks current positions, open/close statuses, etc. Then, runs through several built-in functions to produce a result.
+It is nothing fancy, but it does the job.
 
 ## Example
 
